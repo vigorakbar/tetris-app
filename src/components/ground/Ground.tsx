@@ -1,24 +1,49 @@
 import React, { useState } from "react";
+import styled from "styled-components";
+import { cellColors, fillGround } from "../../util/tetrominoes/color";
+import { SHAPE_L } from "../../util/tetrominoes/shapes";
+
+interface CellProps {
+  cellType: number;
+}
+
+const GroundRow = styled.div`
+  display: flex;
+`;
+
+const GroundCell = styled.div<CellProps>`
+  width: 30px;
+  height: 30px;
+  border: 1px solid gray;
+  background-color: ${(p) => cellColors[p.cellType]};
+`;
 
 const Ground = () => {
   const [groundData, setGroundData] = useState(
     new Array(20).fill(new Array(10).fill(0))
   );
 
-  const renderCell = (val: number) => {
-    let className = "empty";
-    if (val !== 0) className = `filled-${val}`;
-    return <div className={className} />;
+  const testInsertShape = () => {
+    const newGround = fillGround(
+      groundData,
+      SHAPE_L.coordinates[0],
+      SHAPE_L.value
+    );
+    setGroundData(newGround);
   };
 
   return (
-    <div>
-      {groundData.map((row) => (
-        <div className="ground-row">
-          {row.map((val: number) => renderCell(val))}
-        </div>
+    <>
+      {groundData.map((row, i) => (
+        <GroundRow key={i}>
+          {row.map((val: number, j: number) => (
+            <GroundCell key={j} cellType={val} />
+          ))}
+        </GroundRow>
       ))}
-    </div>
+      <div />
+      <button onClick={testInsertShape}>Test set shape </button>
+    </>
   );
 };
 
